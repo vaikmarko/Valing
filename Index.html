@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="et">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>valing.ee</title>
+  <style>
+    :root{
+      --teal:#008080;
+      --gray:#c0c0c0;
+      --dark:#808080;
+      --darker:#404040;
+      --light:#ffffff;
+      --blue:#000080;
+      --text:#000;
+      --shadow: rgba(0,0,0,.25);
+      --font: "MS Sans Serif", Tahoma, Verdana, Arial, sans-serif;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:var(--teal);
+      overflow-x:hidden;
+    }
+
+    /* --- “Desktop screenshot” canvas --- */
+    .stage{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: clamp(12px, 3vw, 28px);
+    }
+
+    .canvas{
+      /* responsive “screenshot”: hoiab 4:3-ish proportsiooni */
+      width: min(1100px, 100%);
+      aspect-ratio: 4 / 3;
+      background: var(--teal);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 18px 60px var(--shadow);
+      border: 1px solid rgba(255,255,255,.25);
+    }
+
+    /* Desktop icons */
+    .icons{
+      position:absolute;
+      inset: 0;
+      padding: clamp(10px, 2.2vw, 18px);
+      display:grid;
+      grid-template-columns: repeat(2, minmax(90px, 110px));
+      grid-auto-rows: min-content;
+      gap: clamp(10px, 2vw, 18px);
+      align-content:start;
+      justify-content:start;
+      pointer-events:none; /* täiesti staatiline */
+    }
+
+    .icon{
+      text-align:center;
+      color:#fff;
+      font-size: clamp(10px, 1.2vw, 12px);
+      line-height:1.15;
+      text-shadow: 1px 1px 0 rgba(0,0,0,.35);
+    }
+    .ico{
+      width: clamp(34px, 4.2vw, 44px);
+      height: clamp(34px, 4.2vw, 44px);
+      margin: 0 auto 6px auto;
+      image-rendering: pixelated;
+      display:block;
+    }
+    .label{ padding: 0 4px; }
+
+    /* Right side icons */
+    .icons-right{
+      position:absolute;
+      top: clamp(10px, 2.2vw, 18px);
+      right: clamp(10px, 2.2vw, 18px);
+      display:grid;
+      gap: clamp(12px, 2vw, 18px);
+      pointer-events:none;
+    }
+    .icons-right .icon{ width: 120px; }
+
+    /* --- Window (VALING.EXE) --- */
+    .window{
+      position:absolute;
+      left: 50%;
+      top: 46%;
+      transform: translate(-50%, -50%);
+      width: min(820px, 92%);
+      background: var(--gray);
+      border-top: 1px solid var(--light);
+      border-left: 1px solid var(--light);
+      border-right: 1px solid var(--darker);
+      border-bottom: 1px solid var(--darker);
+      box-shadow: 6px 6px 0 rgba(0,0,0,.18);
+    }
+
+    .titlebar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 6px 6px 6px 8px;
+      background: linear-gradient(90deg, var(--blue), #0000b0);
+      color:#fff;
+      font-weight:bold;
+      font-size: clamp(12px, 1.3vw, 14px);
+    }
+
+    .title-left{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .title-left span{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .mini{
+      width: 16px;
+      height: 16px;
+      image-rendering: pixelated;
+      display:block;
+    }
+
+    .controls{
+      display:flex;
+      gap:4px;
+      flex: 0 0 auto;
+    }
+    .ctrl{
+      width: 22px;
+      height: 20px;
+      display:grid;
+      place-items:center;
+      color:#000;
+      background: var(--gray);
+      border-top: 1px solid var(--light);
+      border-left: 1px solid var(--light);
+      border-right: 1px solid var(--darker);
+      border-bottom: 1px solid var(--darker);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .body{
+      padding: clamp(10px, 2vw, 14px);
+      display:grid;
+      gap: clamp(10px, 2vw, 14px);
+      color: var(--text);
+      font-size: clamp(12px, 1.25vw, 14px);
+    }
+
+    .topgrid{
+      display:grid;
+      grid-template-columns: 140px 1fr;
+      gap: clamp(10px, 2vw, 14px);
+      align-items:start;
+    }
+
+    @media (max-width: 560px){
+      .topgrid{ grid-template-columns: 1fr; }
+    }
+
+    .badge{
+      display:grid;
+      justify-items:center;
+      gap:8px;
+    }
+    .badge .big{
+      width: clamp(70px, 10vw, 90px);
+      height: clamp(70px, 10vw, 90px);
+      image-rendering: pixelated;
+    }
+    .badge .ver{
+      font-size: clamp(11px, 1.2vw, 12px);
+      font-weight:bold;
+      background:#fff;
+      padding: 4px 8px;
+      border-top: 1px solid var(--darker);
+      border-left: 1px solid var(--darker);
+      border-right: 1px solid var(--light);
+      border-bottom: 1px solid var(--light);
+      width: 100%;
+      text-align:center;
+    }
+
+    .panel{
+      background:#fff;
+      border-top: 1px solid var(--darker);
+      border-left: 1px solid var(--darker);
+      border-right: 1px solid var(--light);
+      border-bottom: 1px solid var(--light);
+      padding: 10px;
+    }
+
+    .meta{
+      display:grid;
+      gap: 6px;
+      font-size: clamp(12px, 1.25vw, 14px);
+      line-height: 1.3;
+    }
+    .meta b{ font-weight:bold; }
+
+    .divider{
+      height:1px;
+      background: var(--dark);
+      box-shadow: 0 1px 0 var(--light);
+      margin: 8px 0;
+    }
+
+    .steps{
+      margin:0;
+      padding-left: 18px;
+      display:grid;
+      gap: 6px;
+    }
+
+    .hint{
+      font-size: clamp(11px, 1.15vw, 13px);
+      color: rgba(0,0,0,.85);
+      margin-top: 6px;
+    }
+
+    /* Taskbar (bottom) */
+    .taskbar{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height: clamp(38px, 6vw, 46px);
+      background: var(--gray);
+      border-top: 1px solid var(--light);
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px;
+    }
+    .start{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:bold;
+      padding: 4px 10px;
+      height: 100%;
+      max-height: 32px;
+      background: var(--gray);
+      border-top: 1px solid var(--light);
+      border-left: 1px solid var(--light);
+      border-right: 1px solid var(--darker);
+      border-bottom: 1px solid var(--darker);
+      font-size: clamp(12px, 1.2vw, 13px);
+      white-space:nowrap;
+    }
+    .clock{
+      margin-left:auto;
+      padding: 4px 10px;
+      height: 100%;
+      max-height: 32px;
+      display:flex;
+      align-items:center;
+      background: var(--gray);
+      border-top: 1px solid var(--light);
+      border-left: 1px solid var(--light);
+      border-right: 1px solid var(--darker);
+      border-bottom: 1px solid var(--darker);
+      font-size: clamp(12px, 1.2vw, 13px);
+    }
+
+    /* Small footer text (outside canvas) */
+    .note{
+      position: fixed;
+      left: 0; right: 0;
+      bottom: 10px;
+      text-align:center;
+      color: rgba(255,255,255,.85);
+      font-size: 12px;
+      text-shadow: 1px 1px 0 rgba(0,0,0,.35);
+      pointer-events:none;
+      padding: 0 12px;
+    }
+
+    /* ---- Inline SVG icons via data URIs ---- */
+    .ico-mycomputer{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
+<rect width='64' height='64' fill='none'/>\
+<rect x='10' y='10' width='44' height='28' fill='%23c0c0c0' stroke='%23404040'/>\
+<rect x='14' y='14' width='36' height='16' fill='%23ffffff' stroke='%23808080'/>\
+<rect x='20' y='42' width='24' height='10' fill='%23808080' stroke='%23404040'/>\
+</svg>");
+    }
+    .ico-network{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
+<circle cx='18' cy='26' r='10' fill='%2300a0ff' stroke='%23404040'/>\
+<circle cx='46' cy='26' r='10' fill='%2300a0ff' stroke='%23404040'/>\
+<rect x='18' y='22' width='28' height='8' fill='%23c0c0c0' stroke='%23404040'/>\
+<rect x='14' y='40' width='36' height='12' fill='%23ffffff' stroke='%23404040'/>\
+</svg>");
+    }
+    .ico-bin{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
+<rect x='18' y='16' width='28' height='40' rx='2' fill='%23ffffff' stroke='%23404040'/>\
+<rect x='16' y='14' width='32' height='6' fill='%23c0c0c0' stroke='%23404040'/>\
+<path d='M24 26 L40 26' stroke='%23808080'/>\
+<path d='M24 34 L40 34' stroke='%23808080'/>\
+<path d='M24 42 L40 42' stroke='%23808080'/>\
+</svg>");
+    }
+    .ico-docs{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
+<path d='M14 10 H44 L50 16 V54 H14 Z' fill='%23fff2a8' stroke='%23404040'/>\
+<path d='M44 10 V16 H50' fill='%23ffe27a' stroke='%23404040'/>\
+<path d='M20 26 H44' stroke='%23808080'/>\
+<path d='M20 34 H44' stroke='%23808080'/>\
+<path d='M20 42 H40' stroke='%23808080'/>\
+</svg>");
+    }
+    .ico-ie{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
+<circle cx='32' cy='32' r='18' fill='%2300a0ff' stroke='%23404040'/>\
+<path d='M16 32 H48' stroke='%23ffffff' stroke-width='3'/>\
+<path d='M22 22 C30 16, 42 16, 46 26' fill='none' stroke='%23ffd000' stroke-width='4'/>\
+</svg>");
+    }
+    .ico-aol{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
+<circle cx='32' cy='26' r='10' fill='%23ffd000' stroke='%23404040'/>\
+<path d='M18 50 C22 40, 42 40, 46 50' fill='none' stroke='%23000080' stroke-width='6'/>\
+<path d='M32 36 V54' stroke='%23000080' stroke-width='6'/>\
+</svg>");
+    }
+    .ico-exe{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
+<rect width='64' height='64' fill='none'/>\
+<rect x='14' y='8' width='36' height='48' fill='%23ffffff' stroke='%23404040'/>\
+<rect x='14' y='8' width='36' height='10' fill='%23000080'/>\
+<text x='18' y='16' font-family='Arial' font-size='8' fill='white'>VALING</text>\
+<rect x='18' y='24' width='28' height='24' fill='%23eaeaea' stroke='%23808080'/>\
+<text x='20' y='50' font-family='Arial' font-size='10' fill='%23000'>.EXE</text>\
+</svg>");
+    }
+    .ico-mini{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>\
+<rect width='16' height='16' fill='%23c0c0c0'/>\
+<rect x='2' y='2' width='12' height='12' fill='%23ffffff' stroke='%23404040'/>\
+<rect x='3' y='3' width='10' height='3' fill='%23000080'/>\
+</svg>");
+    }
+    .ico-start{
+      content:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>\
+<rect width='16' height='16' fill='%23c0c0c0'/>\
+<rect x='1' y='1' width='14' height='14' fill='%23ffffff' stroke='%23404040'/>\
+<path d='M4 12 L4 4 L12 8 Z' fill='%23008000'/>\
+</svg>");
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="canvas" aria-label="Windows 98 desktop">
+
+      <!-- LEFT icons -->
+      <div class="icons" aria-hidden="true">
+        <div class="icon">
+          <img class="ico ico-mycomputer" alt="" />
+          <div class="label">My Computer</div>
+        </div>
+
+        <div class="icon">
+          <img class="ico ico-network" alt="" />
+          <div class="label">Network<br/>Neighborhood</div>
+        </div>
+
+        <div class="icon">
+          <img class="ico ico-bin" alt="" />
+          <div class="label">Recycle Bin</div>
+        </div>
+
+        <div class="icon">
+          <img class="ico ico-exe" alt="" />
+          <div class="label">VALING.EXE</div>
+        </div>
+      </div>
+
+      <!-- RIGHT icons -->
+      <div class="icons-right" aria-hidden="true">
+        <div class="icon">
+          <img class="ico ico-docs" alt="" />
+          <div class="label">My Documents</div>
+        </div>
+        <div class="icon">
+          <img class="ico ico-ie" alt="" />
+          <div class="label">Internet<br/>Explorer</div>
+        </div>
+        <div class="icon">
+          <img class="ico ico-aol" alt="" />
+          <div class="label">AOL</div>
+        </div>
+      </div>
+
+      <!-- VALING.EXE window (open) -->
+      <article class="window" role="img" aria-label="VALING.EXE aken on avatud ja kuvab sammud">
+        <div class="titlebar">
+          <div class="title-left">
+            <img class="mini ico-mini" alt="" />
+            <span>VALING.EXE</span>
+          </div>
+          <div class="controls" aria-hidden="true">
+            <div class="ctrl">_</div>
+            <div class="ctrl">□</div>
+            <div class="ctrl">✕</div>
+          </div>
+        </div>
+
+        <div class="body">
+          <div class="topgrid">
+            <div class="badge">
+              <img class="big ico-exe" alt="" />
+              <div class="ver">Valing v98.0</div>
+            </div>
+
+            <div class="panel meta">
+              <div><b>Toode:</b> Valing Family Suite</div>
+              <div><b>Tüüp:</b> Legacy desktop utiliit</div>
+              <div><b>Autor:</b> Ostin Valing</div>
+              <div><b>Litsents:</b> “Sõbrale kinkimiseks”</div>
+              <div class="divider"></div>
+              <div>
+                Tere tulemast <b>valing.ee</b> “desktopile”.
+                See on retro-landing, mis näeb välja nagu Windows 98.
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div style="font-weight:bold; margin-bottom:6px;">Nõutavad järgmised sammud:</div>
+            <ol class="steps">
+              <li>Hinga sisse 90ndate internetti.</li>
+              <li>Ütle valjusti: “Valing on legend.”</li>
+              <li>Ava külmkapp ja võta üks suvaline nostalgia.</li>
+              <li>Saada Ostinile link: <b>valing.ee</b></li>
+              <li>Naera, sest see sait on <b>khuul</b>.</li>
+            </ol>
+            <div class="hint">
+              (Soovi korral muuda seda teksti otse HTML-is – lisa päris perekonnalugu, inside-joke’e või “changelog’i”.)
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Taskbar -->
+      <footer class="taskbar" aria-hidden="true">
+        <div class="start">
+          <img class="mini ico-start" alt="" />
+          Start
+        </div>
+        <div class="clock">98:00</div>
+      </footer>
+
+    </section>
+  </main>
+
+  <div class="note">valing.ee — Windows 98 stiilis “screenshot” (responsive, staatiline)</div>
+</body>
+</html>
