@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00007b"/>
+      <stop offset="100%" style="stop-color:#0000aa"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background - Teal desktop -->
+  <rect width="1200" height="630" fill="#008080"/>
+  
+  <!-- Window -->
+  <rect x="200" y="80" width="800" height="470" fill="#c0c0c0" stroke="#404040" stroke-width="2"/>
+  <rect x="202" y="82" width="796" height="466" fill="#c0c0c0" stroke="#dfdfdf" stroke-width="2"/>
+  
+  <!-- Title bar -->
+  <rect x="204" y="84" width="792" height="28" fill="url(#titleGrad)"/>
+  
+  <!-- Window icon -->
+  <rect x="210" y="90" width="16" height="16" fill="#fff" stroke="#404040"/>
+  <rect x="210" y="90" width="16" height="6" fill="#000080"/>
+  
+  <!-- Title text -->
+  <text x="235" y="103" font-family="Segoe UI, Tahoma, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">VALING.EXE - Properties</text>
+  
+  <!-- Window buttons -->
+  <rect x="940" y="90" width="16" height="14" fill="#c0c0c0" stroke="#808080"/>
+  <rect x="960" y="90" width="16" height="14" fill="#c0c0c0" stroke="#808080"/>
+  <rect x="980" y="90" width="16" height="14" fill="#c0c0c0" stroke="#808080"/>
+  
+  <!-- Content area -->
+  <rect x="220" y="130" width="760" height="400" fill="#c0c0c0"/>
+  
+  <!-- Profile section -->
+  <rect x="240" y="150" width="100" height="100" fill="#ffffff" stroke="#808080" stroke-width="2"/>
+  <text x="290" y="210" font-family="Arial" font-size="48" fill="#808080" text-anchor="middle">👤</text>
+  
+  <!-- Name -->
+  <text x="360" y="185" font-family="monospace" font-size="42" font-weight="bold" fill="#00007b">VALING</text>
+  
+  <!-- Title -->
+  <text x="360" y="215" font-family="Segoe UI, Tahoma, sans-serif" font-size="16" fill="#404040">Human Being • Professional Legend • valing.ee Admin</text>
+  
+  <!-- Status badge -->
+  <rect x="360" y="230" width="180" height="24" fill="#c6ffc6" stroke="#009900"/>
+  <circle cx="374" cy="242" r="5" fill="#00ff00"/>
+  <text x="385" y="247" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" fill="#000">Online since 1988</text>
+  
+  <!-- Badges -->
+  <rect x="360" y="265" width="70" height="22" fill="#ffd700" stroke="#aa7700"/>
+  <text x="395" y="281" font-family="Segoe UI, Tahoma, sans-serif" font-size="12" font-weight="bold" fill="#553300" text-anchor="middle">★ Legend</text>
+  
+  <rect x="440" y="265" width="55" height="22" fill="#e0e0e0" stroke="#707070"/>
+  <text x="467" y="281" font-family="Segoe UI, Tahoma, sans-serif" font-size="12" font-weight="bold" fill="#333" text-anchor="middle">♦ OG</text>
+  
+  <rect x="505" y="265" width="80" height="22" fill="#cd7f32" stroke="#704010"/>
+  <text x="545" y="281" font-family="Segoe UI, Tahoma, sans-serif" font-size="12" font-weight="bold" fill="#fff" text-anchor="middle">● Since '88</text>
+  
+  <!-- Tabs -->
+  <rect x="240" y="310" width="80" height="26" fill="#ffffff" stroke="#808080"/>
+  <text x="280" y="328" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" fill="#000" text-anchor="middle">General</text>
+  
+  <rect x="322" y="310" width="60" height="26" fill="#c0c0c0" stroke="#808080"/>
+  <text x="352" y="328" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" fill="#000" text-anchor="middle">Stats</text>
+  
+  <rect x="384" y="310" width="60" height="26" fill="#c0c0c0" stroke="#808080"/>
+  <text x="414" y="328" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" fill="#000" text-anchor="middle">About</text>
+  
+  <!-- Content box -->
+  <rect x="240" y="336" width="720" height="180" fill="#ffffff" stroke="#808080" stroke-width="2"/>
+  
+  <!-- Stats -->
+  <text x="260" y="365" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" fill="#404040">Name:</text>
+  <text x="400" y="365" font-family="monospace" font-size="16" font-weight="bold" fill="#000">Valing</text>
+  
+  <text x="520" y="365" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" fill="#404040">Class:</text>
+  <text x="660" y="365" font-family="monospace" font-size="16" font-weight="bold" fill="#000">Legendary</text>
+  
+  <text x="260" y="395" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" fill="#404040">Born:</text>
+  <text x="400" y="395" font-family="monospace" font-size="16" font-weight="bold" fill="#000">1988</text>
+  
+  <text x="520" y="395" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" fill="#404040">Status:</text>
+  <text x="660" y="395" font-family="monospace" font-size="16" font-weight="bold" fill="#009900">✓ Certified Cool</text>
+  
+  <!-- Quote box -->
+  <rect x="260" y="420" width="680" height="50" fill="#ffffcc" stroke="#cccc99"/>
+  <text x="280" y="445" font-family="Georgia, serif" font-size="13" font-style="italic" fill="#000">"Welcome to valing.ee — the coolest corner of the internet since 1988."</text>
+  
+  <!-- Progress bar -->
+  <text x="260" y="495" font-family="Segoe UI, Tahoma, sans-serif" font-size="12" fill="#000">Loading awesomeness...</text>
+  <rect x="260" y="500" width="680" height="18" fill="#ffffff" stroke="#808080"/>
+  <rect x="263" y="503" width="50" height="12" fill="#000080"/>
+  <rect x="316" y="503" width="50" height="12" fill="#000080"/>
+  <rect x="369" y="503" width="50" height="12" fill="#000080"/>
+  <rect x="422" y="503" width="50" height="12" fill="#000080"/>
+  <rect x="475" y="503" width="50" height="12" fill="#000080"/>
+  <rect x="528" y="503" width="50" height="12" fill="#000080"/>
+  
+  <!-- Taskbar -->
+  <rect x="0" y="580" width="1200" height="50" fill="#c0c0c0"/>
+  <rect x="0" y="580" width="1200" height="2" fill="#dfdfdf"/>
+  
+  <!-- Start button -->
+  <rect x="10" y="590" width="80" height="30" fill="#c0c0c0" stroke="#808080" stroke-width="2"/>
+  <rect x="20" y="598" width="14" height="14" fill="#ff0000"/>
+  <rect x="36" y="598" width="14" height="14" fill="#00ff00"/>
+  <rect x="20" y="614" width="14" height="14" fill="#0000ff"/>
+  <rect x="36" y="614" width="14" height="14" fill="#ffff00"/>
+  <text x="58" y="611" font-family="Segoe UI, Tahoma, sans-serif" font-size="14" font-weight="bold" fill="#000">Start</text>
+</svg>
+
