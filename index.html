@@ -2,29 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <title>VALING.EXE - Legend Since 1988</title>
   
-  <!-- Open Graph / WhatsApp / Social Preview -->
+  <!-- Open Graph / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://valing.ee/">
   <meta property="og:title" content="VALING.EXE">
-  <meta property="og:description" content="Legend Since 1988 • Certified Cool • The coolest corner of the internet">
+  <meta property="og:description" content="Legend Since 1988 • Certified Cool • valing.ee">
   <meta property="og:image" content="https://valing.ee/og-image.svg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
   
-  <!-- Twitter Card -->
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="VALING.EXE">
-  <meta name="twitter:description" content="Legend Since 1988 • Certified Cool • The coolest corner of the internet">
-  <meta name="twitter:image" content="https://valing.ee/og-image.svg">
+  <meta name="twitter:description" content="Legend Since 1988 • Certified Cool • valing.ee">
   
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23008080'/><rect x='4' y='4' width='24' height='24' fill='%23c0c0c0'/><rect x='4' y='4' width='24' height='6' fill='%23000080'/><text x='6' y='9' font-size='5' fill='white' font-weight='bold'>V</text></svg>">
   
-  <!-- General Meta -->
-  <meta name="description" content="Legend Since 1988 • Certified Cool • The coolest corner of the internet">
+  <meta name="description" content="Legend Since 1988 • Certified Cool • valing.ee">
   <meta name="theme-color" content="#008080">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,56 +31,27 @@
       --gray: #c0c0c0;
       --dark: #808080;
       --darker: #404040;
-      --darkest: #000;
       --light: #dfdfdf;
       --white: #ffffff;
-      --blue: #000080;
       --navy: #00007b;
       --highlight: #0000aa;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; overflow: hidden; }
+    body { font-family: "Segoe UI", Tahoma, sans-serif; }
 
-    html, body {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    /* Full screen desktop */
     .screen {
       width: 100%;
       height: 100%;
       background: var(--teal);
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Subtle CRT effect */
-    .screen::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(0,0,0,0.015) 0px,
-        rgba(0,0,0,0.015) 1px,
-        transparent 1px,
-        transparent 2px
-      );
-      pointer-events: none;
-      z-index: 100;
-    }
-
-    /* Desktop Icons */
+    /* Desktop Icons - hidden on mobile */
     .desktop {
       position: absolute;
       inset: 8px 8px 38px 8px;
@@ -99,7 +66,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       padding: 4px;
       cursor: default;
       border: 1px solid transparent;
@@ -110,19 +76,13 @@
       border: 1px dotted #fff;
     }
 
-    .icon svg {
-      width: 32px;
-      height: 32px;
-      margin-bottom: 4px;
-    }
-
+    .icon svg { width: 32px; height: 32px; margin-bottom: 4px; }
     .icon span {
       font-size: 11px;
       color: #fff;
       text-align: center;
       text-shadow: 1px 1px 1px #000;
       line-height: 1.2;
-      word-break: break-word;
     }
 
     /* Window */
@@ -131,61 +91,36 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: min(560px, calc(100% - 20px));
+      width: min(540px, calc(100% - 24px));
+      max-height: calc(100% - 50px);
+      overflow: auto;
       background: var(--gray);
       border: 2px solid;
       border-color: var(--light) var(--darker) var(--darker) var(--light);
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
       z-index: 50;
     }
 
     .titlebar {
-      background: linear-gradient(90deg, var(--navy) 0%, var(--highlight) 100%);
+      background: linear-gradient(90deg, var(--navy), var(--highlight));
       padding: 3px 4px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      user-select: none;
     }
 
-    .titlebar-left {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .titlebar-left { display: flex; align-items: center; gap: 4px; }
+    .titlebar-icon { width: 16px; height: 16px; }
+    .titlebar-text { color: #fff; font-size: 12px; font-weight: bold; }
 
-    .titlebar-icon {
-      width: 16px;
-      height: 16px;
-    }
-
-    .titlebar-text {
-      color: #fff;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .titlebar-buttons {
-      display: flex;
-      gap: 2px;
-    }
-
+    .titlebar-buttons { display: flex; gap: 2px; }
     .btn {
-      width: 16px;
-      height: 14px;
+      width: 16px; height: 14px;
       background: var(--gray);
       border: 1px solid;
       border-color: var(--light) var(--darker) var(--darker) var(--light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: bold;
-      cursor: default;
-    }
-
-    .btn:active {
-      border-color: var(--darker) var(--light) var(--light) var(--darker);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: bold;
     }
 
     .menubar {
@@ -194,60 +129,37 @@
       border-bottom: 1px solid var(--dark);
       font-size: 11px;
     }
+    .menubar span { padding: 2px 6px; }
+    .menubar span:hover { background: var(--navy); color: #fff; }
 
-    .menubar span {
-      padding: 2px 6px;
-      cursor: default;
-    }
-
-    .menubar span:hover {
-      background: var(--blue);
-      color: #fff;
-    }
-
-    .window-content {
-      padding: 12px;
-      background: var(--gray);
-    }
+    .window-content { padding: 12px; background: var(--gray); }
 
     .profile-header {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       margin-bottom: 12px;
       align-items: flex-start;
     }
 
     .profile-pic {
-      width: 72px;
-      height: 72px;
+      width: 64px; height: 64px;
       background: var(--white);
       border: 2px solid;
       border-color: var(--darker) var(--light) var(--light) var(--darker);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 42px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
       flex-shrink: 0;
     }
 
-    .profile-info {
-      flex: 1;
-    }
-
+    .profile-info { flex: 1; }
     .profile-name {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       color: var(--navy);
-      margin-bottom: 4px;
       font-family: 'VT323', monospace;
       letter-spacing: 2px;
     }
-
-    .profile-title {
-      font-size: 11px;
-      color: var(--darker);
-      margin-bottom: 8px;
-    }
+    .profile-title { font-size: 10px; color: var(--darker); margin: 4px 0 8px; }
 
     .profile-status {
       display: inline-flex;
@@ -258,73 +170,52 @@
       border: 1px solid #090;
       padding: 2px 6px;
     }
-
     .status-dot {
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
       background: #0f0;
       border-radius: 50%;
       animation: pulse 1.5s infinite;
     }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .badge {
+      padding: 2px 6px;
+      font-size: 9px;
+      border: 1px solid;
     }
+    .badge-gold { background: linear-gradient(180deg, #ffd700, #ffaa00); border-color: #aa7700; color: #553300; }
+    .badge-silver { background: linear-gradient(180deg, #e0e0e0, #a0a0a0); border-color: #707070; color: #333; }
+    .badge-bronze { background: linear-gradient(180deg, #cd7f32, #a05a20); border-color: #704010; color: #fff; }
 
-    .tabs {
-      display: flex;
-      gap: 2px;
-      margin-bottom: -1px;
-    }
-
+    .tabs { display: flex; gap: 2px; margin-bottom: -1px; }
     .tab {
       padding: 4px 12px;
       background: var(--gray);
       border: 1px solid;
       border-color: var(--light) var(--darker) var(--gray) var(--light);
       font-size: 11px;
-      cursor: default;
-      position: relative;
     }
-
-    .tab.active {
-      background: var(--white);
-      border-bottom-color: var(--white);
-      z-index: 1;
-    }
+    .tab.active { background: var(--white); border-bottom-color: var(--white); z-index: 1; }
 
     .tab-content {
       background: var(--white);
       border: 1px solid;
       border-color: var(--darker) var(--light) var(--light) var(--darker);
-      padding: 12px;
+      padding: 10px;
       font-size: 11px;
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px 16px;
-    }
-
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
     .stat-item {
       display: flex;
       justify-content: space-between;
       padding: 2px 0;
       border-bottom: 1px dotted var(--dark);
     }
-
-    .stat-label {
-      color: var(--darker);
-    }
-
-    .stat-value {
-      font-weight: bold;
-      font-family: 'VT323', monospace;
-      font-size: 13px;
-    }
+    .stat-label { color: var(--darker); }
+    .stat-value { font-weight: bold; font-family: 'VT323', monospace; font-size: 13px; }
 
     .quote-box {
       background: #ffffcc;
@@ -332,69 +223,54 @@
       padding: 8px;
       margin-top: 10px;
       font-style: italic;
-    }
-
-    /* Windows 98 block progress bar */
-    .progress-container {
-      margin-top: 12px;
-    }
-
-    .progress-label {
       font-size: 10px;
-      margin-bottom: 4px;
     }
 
+    .progress-container { margin-top: 10px; }
+    .progress-label { font-size: 10px; margin-bottom: 3px; color: var(--darker); }
     .progress-bar {
-      height: 18px;
+      height: 16px;
       background: var(--white);
       border: 1px solid;
       border-color: var(--darker) var(--light) var(--light) var(--darker);
       padding: 2px;
       display: flex;
       gap: 2px;
-      overflow: hidden;
     }
-
     .progress-block {
-      width: 12px;
+      width: 10px;
       height: 100%;
       background: var(--navy);
-      flex-shrink: 0;
       opacity: 0;
       animation: blockAppear 3s infinite;
     }
-
-    @keyframes blockAppear {
-      0%, 100% { opacity: 0; }
-      10%, 90% { opacity: 1; }
-    }
-
+    @keyframes blockAppear { 0%, 100% { opacity: 0; } 10%, 90% { opacity: 1; } }
     .progress-block:nth-child(1) { animation-delay: 0s; }
-    .progress-block:nth-child(2) { animation-delay: 0.15s; }
-    .progress-block:nth-child(3) { animation-delay: 0.3s; }
-    .progress-block:nth-child(4) { animation-delay: 0.45s; }
-    .progress-block:nth-child(5) { animation-delay: 0.6s; }
-    .progress-block:nth-child(6) { animation-delay: 0.75s; }
-    .progress-block:nth-child(7) { animation-delay: 0.9s; }
-    .progress-block:nth-child(8) { animation-delay: 1.05s; }
-    .progress-block:nth-child(9) { animation-delay: 1.2s; }
-    .progress-block:nth-child(10) { animation-delay: 1.35s; }
-    .progress-block:nth-child(11) { animation-delay: 1.5s; }
-    .progress-block:nth-child(12) { animation-delay: 1.65s; }
-    .progress-block:nth-child(13) { animation-delay: 1.8s; }
-    .progress-block:nth-child(14) { animation-delay: 1.95s; }
-    .progress-block:nth-child(15) { animation-delay: 2.1s; }
-    .progress-block:nth-child(16) { animation-delay: 2.25s; }
-    .progress-block:nth-child(17) { animation-delay: 2.4s; }
-    .progress-block:nth-child(18) { animation-delay: 2.55s; }
+    .progress-block:nth-child(2) { animation-delay: 0.12s; }
+    .progress-block:nth-child(3) { animation-delay: 0.24s; }
+    .progress-block:nth-child(4) { animation-delay: 0.36s; }
+    .progress-block:nth-child(5) { animation-delay: 0.48s; }
+    .progress-block:nth-child(6) { animation-delay: 0.6s; }
+    .progress-block:nth-child(7) { animation-delay: 0.72s; }
+    .progress-block:nth-child(8) { animation-delay: 0.84s; }
+    .progress-block:nth-child(9) { animation-delay: 0.96s; }
+    .progress-block:nth-child(10) { animation-delay: 1.08s; }
+    .progress-block:nth-child(11) { animation-delay: 1.2s; }
+    .progress-block:nth-child(12) { animation-delay: 1.32s; }
+    .progress-block:nth-child(13) { animation-delay: 1.44s; }
+    .progress-block:nth-child(14) { animation-delay: 1.56s; }
+    .progress-block:nth-child(15) { animation-delay: 1.68s; }
+    .progress-block:nth-child(16) { animation-delay: 1.8s; }
+    .progress-block:nth-child(17) { animation-delay: 1.92s; }
+    .progress-block:nth-child(18) { animation-delay: 2.04s; }
+    .progress-block:nth-child(19) { animation-delay: 2.16s; }
+    .progress-block:nth-child(20) { animation-delay: 2.28s; }
 
     /* Taskbar */
     .taskbar {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 30px;
+      left: 0; right: 0; bottom: 0;
+      height: 28px;
       background: var(--gray);
       border-top: 2px solid var(--light);
       display: flex;
@@ -408,237 +284,126 @@
       align-items: center;
       gap: 4px;
       padding: 2px 6px;
-      height: 22px;
+      height: 20px;
       background: var(--gray);
       border: 2px solid;
       border-color: var(--light) var(--darker) var(--darker) var(--light);
       font-size: 11px;
       font-weight: bold;
-      cursor: default;
     }
-
-    .start-btn:active {
-      border-color: var(--darker) var(--light) var(--light) var(--darker);
-    }
-
-    .start-btn svg {
-      width: 16px;
-      height: 16px;
-    }
+    .start-btn svg { width: 14px; height: 14px; }
 
     .taskbar-divider {
-      width: 2px;
-      height: 22px;
+      width: 2px; height: 20px;
       border-left: 1px solid var(--darker);
       border-right: 1px solid var(--light);
-      margin: 0 2px;
     }
 
     .taskbar-item {
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 2px 8px;
-      height: 22px;
+      padding: 2px 6px;
+      height: 20px;
       background: var(--gray);
       border: 2px solid;
       border-color: var(--darker) var(--light) var(--light) var(--darker);
-      font-size: 11px;
-      min-width: 100px;
-      max-width: 160px;
+      font-size: 10px;
     }
-
-    .taskbar-item svg {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-    }
-
-    .taskbar-item span {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .taskbar-item svg { width: 12px; height: 12px; }
 
     .tray {
       margin-left: auto;
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 2px 8px;
-      height: 22px;
+      gap: 6px;
+      padding: 2px 6px;
+      height: 20px;
       border: 1px solid;
       border-color: var(--darker) var(--light) var(--light) var(--darker);
       font-size: 11px;
     }
+    .tray svg { width: 12px; height: 12px; }
 
-    .tray-icons {
-      display: flex;
-      gap: 4px;
-    }
-
-    .tray-icons svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    .badges {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 2px 6px;
-      font-size: 9px;
-      border: 1px solid;
-      cursor: default;
-    }
-
-    .badge-gold {
-      background: linear-gradient(180deg, #ffd700 0%, #ffaa00 100%);
-      border-color: #aa7700;
-      color: #553300;
-    }
-
-    .badge-silver {
-      background: linear-gradient(180deg, #e0e0e0 0%, #a0a0a0 100%);
-      border-color: #707070;
-      color: #333;
-    }
-
-    .badge-bronze {
-      background: linear-gradient(180deg, #cd7f32 0%, #a05a20 100%);
-      border-color: #704010;
-      color: #fff;
-    }
-
-    /* Responsive */
+    /* MOBILE */
     @media (max-width: 600px) {
+      .desktop { display: none; }
+      
+      .window {
+        position: static;
+        transform: none;
+        width: 100%;
+        max-height: none;
+        height: auto;
+        flex: 1;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        overflow-y: auto;
+      }
+
+      .screen {
+        display: flex;
+        flex-direction: column;
+      }
+
       .profile-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
       }
 
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .desktop {
-        grid-template-columns: repeat(auto-fill, 65px);
-        grid-auto-rows: 70px;
-      }
-
-      .icon svg {
-        width: 28px;
-        height: 28px;
-      }
-
-      .icon span {
-        font-size: 9px;
-      }
-
-      .window {
-        width: calc(100% - 16px);
-      }
-
-      .taskbar-item {
-        min-width: auto;
-        max-width: 90px;
-      }
-
-      .tabs {
-        flex-wrap: wrap;
+      .stats-grid { grid-template-columns: 1fr; }
+      .tabs { flex-wrap: wrap; }
+      
+      .taskbar {
+        position: relative;
+        flex-shrink: 0;
       }
     }
 
     @media (max-width: 400px) {
-      .tray-icons {
-        display: none;
-      }
-
-      .badges {
-        justify-content: center;
-      }
+      .tray svg { display: none; }
+      .profile-pic { width: 56px; height: 56px; font-size: 30px; }
+      .profile-name { font-size: 18px; }
+      .badges { justify-content: center; }
     }
   </style>
 </head>
 <body>
   <div class="screen">
     
-    <!-- Desktop Icons -->
     <div class="desktop">
       <div class="icon">
-        <svg viewBox="0 0 32 32">
-          <rect x="4" y="6" width="24" height="16" fill="#c0c0c0" stroke="#404040"/>
-          <rect x="6" y="8" width="20" height="10" fill="#fff" stroke="#808080"/>
-          <rect x="10" y="24" width="12" height="4" fill="#808080" stroke="#404040"/>
-        </svg>
+        <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="16" fill="#c0c0c0" stroke="#404040"/><rect x="6" y="8" width="20" height="10" fill="#fff" stroke="#808080"/><rect x="10" y="24" width="12" height="4" fill="#808080" stroke="#404040"/></svg>
         <span>My Computer</span>
       </div>
       <div class="icon">
-        <svg viewBox="0 0 32 32">
-          <circle cx="10" cy="12" r="6" fill="#00a0ff" stroke="#404040"/>
-          <circle cx="22" cy="12" r="6" fill="#00a0ff" stroke="#404040"/>
-          <rect x="10" y="10" width="12" height="4" fill="#c0c0c0" stroke="#404040"/>
-          <rect x="6" y="22" width="20" height="6" fill="#fff" stroke="#404040"/>
-        </svg>
+        <svg viewBox="0 0 32 32"><circle cx="10" cy="12" r="6" fill="#00a0ff" stroke="#404040"/><circle cx="22" cy="12" r="6" fill="#00a0ff" stroke="#404040"/><rect x="10" y="10" width="12" height="4" fill="#c0c0c0" stroke="#404040"/><rect x="6" y="22" width="20" height="6" fill="#fff" stroke="#404040"/></svg>
         <span>Network</span>
       </div>
       <div class="icon">
-        <svg viewBox="0 0 32 32">
-          <rect x="8" y="8" width="16" height="20" rx="1" fill="#fff" stroke="#404040"/>
-          <rect x="8" y="6" width="16" height="4" fill="#c0c0c0" stroke="#404040"/>
-          <line x1="11" y1="14" x2="21" y2="14" stroke="#808080"/>
-          <line x1="11" y1="18" x2="21" y2="18" stroke="#808080"/>
-          <line x1="11" y1="22" x2="18" y2="22" stroke="#808080"/>
-        </svg>
+        <svg viewBox="0 0 32 32"><rect x="8" y="8" width="16" height="20" rx="1" fill="#fff" stroke="#404040"/><rect x="8" y="6" width="16" height="4" fill="#c0c0c0" stroke="#404040"/></svg>
         <span>Recycle Bin</span>
       </div>
       <div class="icon">
-        <svg viewBox="0 0 32 32">
-          <rect x="6" y="4" width="20" height="24" fill="#fff" stroke="#404040"/>
-          <rect x="6" y="4" width="20" height="6" fill="#000080"/>
-          <text x="8" y="9" font-size="5" fill="#fff" font-weight="bold">VALING</text>
-          <rect x="9" y="14" width="14" height="10" fill="#eaeaea" stroke="#808080"/>
-          <text x="8" y="27" font-size="5" fill="#000">.EXE</text>
-        </svg>
+        <svg viewBox="0 0 32 32"><rect x="6" y="4" width="20" height="24" fill="#fff" stroke="#404040"/><rect x="6" y="4" width="20" height="6" fill="#000080"/><text x="8" y="9" font-size="5" fill="#fff" font-weight="bold">V</text></svg>
         <span>VALING.EXE</span>
       </div>
       <div class="icon">
-        <svg viewBox="0 0 32 32">
-          <path d="M6 6 H22 L26 10 V28 H6 Z" fill="#fff2a8" stroke="#404040"/>
-          <path d="M22 6 V10 H26" fill="#ffe27a" stroke="#404040"/>
-          <line x1="10" y1="14" x2="22" y2="14" stroke="#808080"/>
-          <line x1="10" y1="18" x2="22" y2="18" stroke="#808080"/>
-          <line x1="10" y1="22" x2="18" y2="22" stroke="#808080"/>
-        </svg>
+        <svg viewBox="0 0 32 32"><path d="M6 6 H22 L26 10 V28 H6 Z" fill="#fff2a8" stroke="#404040"/></svg>
         <span>My Documents</span>
       </div>
       <div class="icon">
-        <svg viewBox="0 0 32 32">
-          <circle cx="16" cy="16" r="10" fill="#00a0ff" stroke="#404040"/>
-          <line x1="8" y1="16" x2="24" y2="16" stroke="#fff" stroke-width="2"/>
-          <path d="M10 10 Q16 6, 22 12" fill="none" stroke="#ffd000" stroke-width="3"/>
-        </svg>
+        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="#00a0ff" stroke="#404040"/><line x1="8" y1="16" x2="24" y2="16" stroke="#fff" stroke-width="2"/></svg>
         <span>Internet Explorer</span>
       </div>
     </div>
 
-    <!-- Main Window -->
     <div class="window">
       <div class="titlebar">
         <div class="titlebar-left">
-          <svg class="titlebar-icon" viewBox="0 0 16 16">
-            <rect x="2" y="1" width="12" height="14" fill="#fff" stroke="#404040" stroke-width="0.5"/>
-            <rect x="2" y="1" width="12" height="4" fill="#000080"/>
-            <text x="3" y="4" font-size="3" fill="#fff">V</text>
-          </svg>
+          <svg class="titlebar-icon" viewBox="0 0 16 16"><rect x="2" y="1" width="12" height="14" fill="#fff" stroke="#404040" stroke-width="0.5"/><rect x="2" y="1" width="12" height="4" fill="#000080"/></svg>
           <span class="titlebar-text">VALING.EXE - Properties</span>
         </div>
         <div class="titlebar-buttons">
@@ -681,96 +446,43 @@
 
         <div class="tab-content">
           <div class="stats-grid">
-            <div class="stat-item">
-              <span class="stat-label">Name:</span>
-              <span class="stat-value">Valing</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Class:</span>
-              <span class="stat-value">Legendary</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Born:</span>
-              <span class="stat-value">1988</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Status:</span>
-              <span class="stat-value" style="color: green;">✓ Certified Cool</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Domain:</span>
-              <span class="stat-value">valing.ee</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Vibes:</span>
-              <span class="stat-value">Immaculate</span>
-            </div>
+            <div class="stat-item"><span class="stat-label">Name:</span><span class="stat-value">Valing</span></div>
+            <div class="stat-item"><span class="stat-label">Class:</span><span class="stat-value">Legendary</span></div>
+            <div class="stat-item"><span class="stat-label">Born:</span><span class="stat-value">1988</span></div>
+            <div class="stat-item"><span class="stat-label">Status:</span><span class="stat-value" style="color:green;">✓ Certified Cool</span></div>
+            <div class="stat-item"><span class="stat-label">Domain:</span><span class="stat-value">valing.ee</span></div>
+            <div class="stat-item"><span class="stat-label">Vibes:</span><span class="stat-value">Immaculate</span></div>
           </div>
 
           <div class="quote-box">
-            "Welcome to valing.ee — the coolest corner of the internet since 1988. Where legends are made and dial-up sounds echo in eternity."
+            "Welcome to valing.ee — the coolest corner of the internet since 1988. Where legends live and dial-up echoes forever."
           </div>
 
           <div class="progress-container">
-            <div class="progress-label">Loading awesomeness...</div>
+            <div class="progress-label">Initializing legend.dll...</div>
             <div class="progress-bar">
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
-              <div class="progress-block"></div>
+              <div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div>
+              <div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div>
+              <div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div>
+              <div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div><div class="progress-block"></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Taskbar -->
     <div class="taskbar">
       <div class="start-btn">
-        <svg viewBox="0 0 16 16">
-          <rect width="16" height="16" fill="#c0c0c0"/>
-          <rect x="1" y="1" width="6" height="6" fill="#ff0000"/>
-          <rect x="9" y="1" width="6" height="6" fill="#00ff00"/>
-          <rect x="1" y="9" width="6" height="6" fill="#0000ff"/>
-          <rect x="9" y="9" width="6" height="6" fill="#ffff00"/>
-        </svg>
+        <svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" fill="#ff0000"/><rect x="9" y="1" width="6" height="6" fill="#00ff00"/><rect x="1" y="9" width="6" height="6" fill="#0000ff"/><rect x="9" y="9" width="6" height="6" fill="#ffff00"/></svg>
         <span>Start</span>
       </div>
       <div class="taskbar-divider"></div>
       <div class="taskbar-item">
-        <svg viewBox="0 0 16 16">
-          <rect x="2" y="1" width="12" height="14" fill="#fff" stroke="#404040" stroke-width="0.5"/>
-          <rect x="2" y="1" width="12" height="4" fill="#000080"/>
-        </svg>
+        <svg viewBox="0 0 16 16"><rect x="2" y="1" width="12" height="14" fill="#fff" stroke="#404040" stroke-width="0.5"/><rect x="2" y="1" width="12" height="4" fill="#000080"/></svg>
         <span>VALING.EXE</span>
       </div>
       <div class="tray">
-        <div class="tray-icons">
-          <svg viewBox="0 0 16 16">
-            <rect x="3" y="8" width="2" height="6" fill="#000"/>
-            <rect x="7" y="5" width="2" height="9" fill="#000"/>
-            <rect x="11" y="2" width="2" height="12" fill="#000"/>
-          </svg>
-          <svg viewBox="0 0 16 16">
-            <circle cx="8" cy="8" r="6" fill="none" stroke="#000" stroke-width="1.5"/>
-            <line x1="8" y1="4" x2="8" y2="8" stroke="#000" stroke-width="1.5"/>
-            <line x1="8" y1="8" x2="11" y2="10" stroke="#000" stroke-width="1.5"/>
-          </svg>
-        </div>
+        <svg viewBox="0 0 16 16"><rect x="3" y="8" width="2" height="6" fill="#000"/><rect x="7" y="5" width="2" height="9" fill="#000"/><rect x="11" y="2" width="2" height="12" fill="#000"/></svg>
         <span id="clock">12:00</span>
       </div>
     </div>
@@ -779,9 +491,9 @@
   <script>
     function updateClock() {
       const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      document.getElementById('clock').textContent = hours + ':' + minutes;
+      document.getElementById('clock').textContent = 
+        now.getHours().toString().padStart(2,'0') + ':' + 
+        now.getMinutes().toString().padStart(2,'0');
     }
     updateClock();
     setInterval(updateClock, 1000);
