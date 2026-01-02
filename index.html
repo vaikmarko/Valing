@@ -1,482 +1,755 @@
-<!doctype html>
-<html lang="et">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>valing.ee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --teal:#008080;
-      --gray:#c0c0c0;
-      --dark:#808080;
-      --darker:#404040;
-      --light:#ffffff;
-      --blue:#000080;
-      --text:#000;
-      --shadow: rgba(0,0,0,.25);
-      --font: "MS Sans Serif", Tahoma, Verdana, Arial, sans-serif;
+    :root {
+      --teal: #008080;
+      --gray: #c0c0c0;
+      --dark: #808080;
+      --darker: #404040;
+      --darkest: #000;
+      --light: #dfdfdf;
+      --white: #ffffff;
+      --blue: #000080;
+      --navy: #00007b;
+      --highlight: #0000aa;
     }
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family:var(--font);
-      background:var(--teal);
-      overflow-x:hidden;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* --- “Desktop screenshot” canvas --- */
-    .stage{
-      min-height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: clamp(12px, 3vw, 28px);
+    html, body {
+      height: 100%;
+      overflow: hidden;
     }
 
-    .canvas{
-      /* responsive “screenshot”: hoiab 4:3-ish proportsiooni */
-      width: min(1100px, 100%);
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .monitor {
+      width: 100%;
+      max-width: 1200px;
       aspect-ratio: 4 / 3;
+      background: #2a2a2a;
+      border-radius: 20px;
+      padding: 25px 30px 50px 30px;
+      box-shadow: 
+        0 0 0 3px #1a1a1a,
+        0 0 0 6px #3a3a3a,
+        0 30px 60px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.1);
+      position: relative;
+    }
+
+    .monitor::after {
+      content: "VALING";
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      color: #666;
+      letter-spacing: 4px;
+    }
+
+    .monitor-led {
+      position: absolute;
+      bottom: 18px;
+      right: 40px;
+      width: 8px;
+      height: 8px;
+      background: #00ff00;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #00ff00;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 90%, 100% { opacity: 1; }
+      95% { opacity: 0.3; }
+    }
+
+    .screen {
+      width: 100%;
+      height: 100%;
       background: var(--teal);
-      border-radius: 6px;
+      border-radius: 8px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 18px 60px var(--shadow);
-      border: 1px solid rgba(255,255,255,.25);
+      box-shadow: 
+        inset 0 0 100px rgba(0,0,0,0.3),
+        inset 0 0 20px rgba(0,0,0,0.2);
     }
 
-    /* Desktop icons */
-    .icons{
-      position:absolute;
+    .screen::before {
+      content: "";
+      position: absolute;
       inset: 0;
-      padding: clamp(10px, 2.2vw, 18px);
-      display:grid;
-      grid-template-columns: repeat(2, minmax(90px, 110px));
-      grid-auto-rows: min-content;
-      gap: clamp(10px, 2vw, 18px);
-      align-content:start;
-      justify-content:start;
-      pointer-events:none; /* täiesti staatiline */
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.03) 0px,
+        rgba(0,0,0,0.03) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 100;
     }
 
-    .icon{
-      text-align:center;
-      color:#fff;
-      font-size: clamp(10px, 1.2vw, 12px);
-      line-height:1.15;
-      text-shadow: 1px 1px 0 rgba(0,0,0,.35);
+    .screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.2) 100%);
+      pointer-events: none;
+      z-index: 99;
     }
-    .ico{
-      width: clamp(34px, 4.2vw, 44px);
-      height: clamp(34px, 4.2vw, 44px);
-      margin: 0 auto 6px auto;
-      image-rendering: pixelated;
-      display:block;
-    }
-    .label{ padding: 0 4px; }
 
-    /* Right side icons */
-    .icons-right{
-      position:absolute;
-      top: clamp(10px, 2.2vw, 18px);
-      right: clamp(10px, 2.2vw, 18px);
-      display:grid;
-      gap: clamp(12px, 2vw, 18px);
-      pointer-events:none;
+    .desktop {
+      position: absolute;
+      inset: 10px 10px 40px 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 75px);
+      grid-auto-rows: 75px;
+      gap: 5px;
+      align-content: start;
     }
-    .icons-right .icon{ width: 120px; }
 
-    /* --- Window (VALING.EXE) --- */
-    .window{
-      position:absolute;
+    .icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 4px;
+      cursor: default;
+      border: 1px solid transparent;
+    }
+
+    .icon:hover {
+      background: rgba(0,0,128,0.3);
+      border: 1px dotted #fff;
+    }
+
+    .icon svg {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 4px;
+    }
+
+    .icon span {
+      font-size: 11px;
+      color: #fff;
+      text-align: center;
+      text-shadow: 1px 1px 1px #000;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .window {
+      position: absolute;
       left: 50%;
-      top: 46%;
+      top: 50%;
       transform: translate(-50%, -50%);
-      width: min(820px, 92%);
+      width: min(600px, calc(100% - 40px));
       background: var(--gray);
-      border-top: 1px solid var(--light);
-      border-left: 1px solid var(--light);
-      border-right: 1px solid var(--darker);
-      border-bottom: 1px solid var(--darker);
-      box-shadow: 6px 6px 0 rgba(0,0,0,.18);
+      border: 2px solid;
+      border-color: var(--light) var(--darker) var(--darker) var(--light);
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+      z-index: 50;
     }
 
-    .titlebar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: 6px 6px 6px 8px;
-      background: linear-gradient(90deg, var(--blue), #0000b0);
-      color:#fff;
-      font-weight:bold;
-      font-size: clamp(12px, 1.3vw, 14px);
+    .titlebar {
+      background: linear-gradient(90deg, var(--navy) 0%, var(--highlight) 100%);
+      padding: 3px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
     }
 
-    .title-left{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-width:0;
-    }
-    .title-left span{
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .titlebar-left {
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .mini{
+    .titlebar-icon {
       width: 16px;
       height: 16px;
-      image-rendering: pixelated;
-      display:block;
     }
 
-    .controls{
-      display:flex;
-      gap:4px;
-      flex: 0 0 auto;
-    }
-    .ctrl{
-      width: 22px;
-      height: 20px;
-      display:grid;
-      place-items:center;
-      color:#000;
-      background: var(--gray);
-      border-top: 1px solid var(--light);
-      border-left: 1px solid var(--light);
-      border-right: 1px solid var(--darker);
-      border-bottom: 1px solid var(--darker);
+    .titlebar-text {
+      color: #fff;
       font-size: 12px;
-      line-height: 1;
+      font-weight: bold;
     }
 
-    .body{
-      padding: clamp(10px, 2vw, 14px);
-      display:grid;
-      gap: clamp(10px, 2vw, 14px);
-      color: var(--text);
-      font-size: clamp(12px, 1.25vw, 14px);
+    .titlebar-buttons {
+      display: flex;
+      gap: 2px;
     }
 
-    .topgrid{
-      display:grid;
-      grid-template-columns: 140px 1fr;
-      gap: clamp(10px, 2vw, 14px);
-      align-items:start;
-    }
-
-    @media (max-width: 560px){
-      .topgrid{ grid-template-columns: 1fr; }
-    }
-
-    .badge{
-      display:grid;
-      justify-items:center;
-      gap:8px;
-    }
-    .badge .big{
-      width: clamp(70px, 10vw, 90px);
-      height: clamp(70px, 10vw, 90px);
-      image-rendering: pixelated;
-    }
-    .badge .ver{
-      font-size: clamp(11px, 1.2vw, 12px);
-      font-weight:bold;
-      background:#fff;
-      padding: 4px 8px;
-      border-top: 1px solid var(--darker);
-      border-left: 1px solid var(--darker);
-      border-right: 1px solid var(--light);
-      border-bottom: 1px solid var(--light);
-      width: 100%;
-      text-align:center;
-    }
-
-    .panel{
-      background:#fff;
-      border-top: 1px solid var(--darker);
-      border-left: 1px solid var(--darker);
-      border-right: 1px solid var(--light);
-      border-bottom: 1px solid var(--light);
-      padding: 10px;
-    }
-
-    .meta{
-      display:grid;
-      gap: 6px;
-      font-size: clamp(12px, 1.25vw, 14px);
-      line-height: 1.3;
-    }
-    .meta b{ font-weight:bold; }
-
-    .divider{
-      height:1px;
-      background: var(--dark);
-      box-shadow: 0 1px 0 var(--light);
-      margin: 8px 0;
-    }
-
-    .steps{
-      margin:0;
-      padding-left: 18px;
-      display:grid;
-      gap: 6px;
-    }
-
-    .hint{
-      font-size: clamp(11px, 1.15vw, 13px);
-      color: rgba(0,0,0,.85);
-      margin-top: 6px;
-    }
-
-    /* Taskbar (bottom) */
-    .taskbar{
-      position:absolute;
-      left:0; right:0; bottom:0;
-      height: clamp(38px, 6vw, 46px);
+    .btn {
+      width: 16px;
+      height: 14px;
       background: var(--gray);
-      border-top: 1px solid var(--light);
-      display:flex;
-      align-items:center;
+      border: 1px solid;
+      border-color: var(--light) var(--darker) var(--darker) var(--light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: default;
+    }
+
+    .btn:active {
+      border-color: var(--darker) var(--light) var(--light) var(--darker);
+    }
+
+    .menubar {
+      background: var(--gray);
+      padding: 2px 4px;
+      border-bottom: 1px solid var(--dark);
+      font-size: 11px;
+    }
+
+    .menubar span {
+      padding: 2px 6px;
+      cursor: default;
+    }
+
+    .menubar span:hover {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .window-content {
+      padding: 12px;
+      background: var(--gray);
+    }
+
+    .profile-header {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
+
+    .profile-pic {
+      width: 80px;
+      height: 80px;
+      background: var(--white);
+      border: 2px solid;
+      border-color: var(--darker) var(--light) var(--light) var(--darker);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--navy);
+      margin-bottom: 4px;
+      font-family: 'VT323', monospace;
+      letter-spacing: 1px;
+    }
+
+    .profile-title {
+      font-size: 11px;
+      color: var(--darker);
+      margin-bottom: 8px;
+    }
+
+    .profile-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      background: #c6ffc6;
+      border: 1px solid #090;
+      padding: 2px 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: #0f0;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: -1px;
+    }
+
+    .tab {
+      padding: 4px 12px;
+      background: var(--gray);
+      border: 1px solid;
+      border-color: var(--light) var(--darker) var(--gray) var(--light);
+      font-size: 11px;
+      cursor: default;
+      position: relative;
+    }
+
+    .tab.active {
+      background: var(--white);
+      border-bottom-color: var(--white);
+      z-index: 1;
+    }
+
+    .tab-content {
+      background: var(--white);
+      border: 1px solid;
+      border-color: var(--darker) var(--light) var(--light) var(--darker);
+      padding: 12px;
+      font-size: 11px;
+      line-height: 1.5;
+      min-height: 140px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
-      padding: 6px;
-    }
-    .start{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-weight:bold;
-      padding: 4px 10px;
-      height: 100%;
-      max-height: 32px;
-      background: var(--gray);
-      border-top: 1px solid var(--light);
-      border-left: 1px solid var(--light);
-      border-right: 1px solid var(--darker);
-      border-bottom: 1px solid var(--darker);
-      font-size: clamp(12px, 1.2vw, 13px);
-      white-space:nowrap;
-    }
-    .clock{
-      margin-left:auto;
-      padding: 4px 10px;
-      height: 100%;
-      max-height: 32px;
-      display:flex;
-      align-items:center;
-      background: var(--gray);
-      border-top: 1px solid var(--light);
-      border-left: 1px solid var(--light);
-      border-right: 1px solid var(--darker);
-      border-bottom: 1px solid var(--darker);
-      font-size: clamp(12px, 1.2vw, 13px);
     }
 
-    /* Small footer text (outside canvas) */
-    .note{
-      position: fixed;
-      left: 0; right: 0;
-      bottom: 10px;
-      text-align:center;
-      color: rgba(255,255,255,.85);
-      font-size: 12px;
-      text-shadow: 1px 1px 0 rgba(0,0,0,.35);
-      pointer-events:none;
-      padding: 0 12px;
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      border-bottom: 1px dotted var(--dark);
     }
 
-    /* ---- Inline SVG icons via data URIs ---- */
-    .ico-mycomputer{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
-<rect width='64' height='64' fill='none'/>\
-<rect x='10' y='10' width='44' height='28' fill='%23c0c0c0' stroke='%23404040'/>\
-<rect x='14' y='14' width='36' height='16' fill='%23ffffff' stroke='%23808080'/>\
-<rect x='20' y='42' width='24' height='10' fill='%23808080' stroke='%23404040'/>\
-</svg>");
+    .stat-label {
+      color: var(--darker);
     }
-    .ico-network{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
-<circle cx='18' cy='26' r='10' fill='%2300a0ff' stroke='%23404040'/>\
-<circle cx='46' cy='26' r='10' fill='%2300a0ff' stroke='%23404040'/>\
-<rect x='18' y='22' width='28' height='8' fill='%23c0c0c0' stroke='%23404040'/>\
-<rect x='14' y='40' width='36' height='12' fill='%23ffffff' stroke='%23404040'/>\
-</svg>");
+
+    .stat-value {
+      font-weight: bold;
+      font-family: 'VT323', monospace;
     }
-    .ico-bin{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
-<rect x='18' y='16' width='28' height='40' rx='2' fill='%23ffffff' stroke='%23404040'/>\
-<rect x='16' y='14' width='32' height='6' fill='%23c0c0c0' stroke='%23404040'/>\
-<path d='M24 26 L40 26' stroke='%23808080'/>\
-<path d='M24 34 L40 34' stroke='%23808080'/>\
-<path d='M24 42 L40 42' stroke='%23808080'/>\
-</svg>");
+
+    .quote-box {
+      background: #ffffcc;
+      border: 1px solid #cc9;
+      padding: 8px;
+      margin-top: 8px;
+      font-style: italic;
+      position: relative;
     }
-    .ico-docs{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
-<path d='M14 10 H44 L50 16 V54 H14 Z' fill='%23fff2a8' stroke='%23404040'/>\
-<path d='M44 10 V16 H50' fill='%23ffe27a' stroke='%23404040'/>\
-<path d='M20 26 H44' stroke='%23808080'/>\
-<path d='M20 34 H44' stroke='%23808080'/>\
-<path d='M20 42 H40' stroke='%23808080'/>\
-</svg>");
+
+    .progress-bar {
+      height: 14px;
+      background: var(--white);
+      border: 1px solid;
+      border-color: var(--darker) var(--light) var(--light) var(--darker);
+      position: relative;
+      overflow: hidden;
     }
-    .ico-ie{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
-<circle cx='32' cy='32' r='18' fill='%2300a0ff' stroke='%23404040'/>\
-<path d='M16 32 H48' stroke='%23ffffff' stroke-width='3'/>\
-<path d='M22 22 C30 16, 42 16, 46 26' fill='none' stroke='%23ffd000' stroke-width='4'/>\
-</svg>");
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--navy) 0%, #4444ff 100%);
+      animation: loading 2s ease-in-out infinite;
     }
-    .ico-aol{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
-<circle cx='32' cy='26' r='10' fill='%23ffd000' stroke='%23404040'/>\
-<path d='M18 50 C22 40, 42 40, 46 50' fill='none' stroke='%23000080' stroke-width='6'/>\
-<path d='M32 36 V54' stroke='%23000080' stroke-width='6'/>\
-</svg>");
+
+    @keyframes loading {
+      0% { width: 0%; }
+      50% { width: 100%; }
+      100% { width: 0%; }
     }
-    .ico-exe{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>\
-<rect width='64' height='64' fill='none'/>\
-<rect x='14' y='8' width='36' height='48' fill='%23ffffff' stroke='%23404040'/>\
-<rect x='14' y='8' width='36' height='10' fill='%23000080'/>\
-<text x='18' y='16' font-family='Arial' font-size='8' fill='white'>VALING</text>\
-<rect x='18' y='24' width='28' height='24' fill='%23eaeaea' stroke='%23808080'/>\
-<text x='20' y='50' font-family='Arial' font-size='10' fill='%23000'>.EXE</text>\
-</svg>");
+
+    .progress-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      mix-blend-mode: difference;
+      color: #fff;
     }
-    .ico-mini{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>\
-<rect width='16' height='16' fill='%23c0c0c0'/>\
-<rect x='2' y='2' width='12' height='12' fill='%23ffffff' stroke='%23404040'/>\
-<rect x='3' y='3' width='10' height='3' fill='%23000080'/>\
-</svg>");
+
+    .taskbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 30px;
+      background: var(--gray);
+      border-top: 2px solid var(--light);
+      display: flex;
+      align-items: center;
+      padding: 2px 4px;
+      gap: 4px;
     }
-    .ico-start{
-      content:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>\
-<rect width='16' height='16' fill='%23c0c0c0'/>\
-<rect x='1' y='1' width='14' height='14' fill='%23ffffff' stroke='%23404040'/>\
-<path d='M4 12 L4 4 L12 8 Z' fill='%23008000'/>\
-</svg>");
+
+    .start-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      height: 22px;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--light) var(--darker) var(--darker) var(--light);
+      font-size: 11px;
+      font-weight: bold;
+      cursor: default;
+    }
+
+    .start-btn:active {
+      border-color: var(--darker) var(--light) var(--light) var(--darker);
+    }
+
+    .start-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .taskbar-divider {
+      width: 2px;
+      height: 22px;
+      border-left: 1px solid var(--darker);
+      border-right: 1px solid var(--light);
+      margin: 0 2px;
+    }
+
+    .taskbar-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      height: 22px;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--darker) var(--light) var(--light) var(--darker);
+      font-size: 11px;
+      min-width: 120px;
+      max-width: 160px;
+    }
+
+    .taskbar-item svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .taskbar-item span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tray {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 8px;
+      height: 22px;
+      border: 1px solid;
+      border-color: var(--darker) var(--light) var(--light) var(--darker);
+      font-size: 11px;
+    }
+
+    .tray-icons {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tray-icons svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 6px;
+      font-size: 9px;
+      border: 1px solid;
+      cursor: default;
+    }
+
+    .badge-gold {
+      background: linear-gradient(180deg, #ffd700 0%, #ffaa00 100%);
+      border-color: #aa7700;
+      color: #553300;
+    }
+
+    .badge-silver {
+      background: linear-gradient(180deg, #e0e0e0 0%, #a0a0a0 100%);
+      border-color: #707070;
+      color: #333;
+    }
+
+    .badge-bronze {
+      background: linear-gradient(180deg, #cd7f32 0%, #a05a20 100%);
+      border-color: #704010;
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .monitor { padding: 15px 15px 40px 15px; border-radius: 12px; }
+      .profile-header { flex-direction: column; align-items: center; text-align: center; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .desktop { grid-template-columns: repeat(auto-fill, 60px); grid-auto-rows: 65px; }
+      .icon svg { width: 28px; height: 28px; }
+      .icon span { font-size: 9px; }
+      .window { width: calc(100% - 20px); }
+      .taskbar-item { min-width: auto; max-width: 100px; }
+    }
+
+    @media (max-width: 480px) {
+      .monitor::after { font-size: 10px; }
+      .tabs { flex-wrap: wrap; }
+      .tray-icons { display: none; }
     }
   </style>
 </head>
 <body>
-  <main class="stage">
-    <section class="canvas" aria-label="Windows 98 desktop">
-
-      <!-- LEFT icons -->
-      <div class="icons" aria-hidden="true">
+  <div class="monitor">
+    <div class="monitor-led"></div>
+    <div class="screen">
+      
+      <div class="desktop">
         <div class="icon">
-          <img class="ico ico-mycomputer" alt="" />
-          <div class="label">My Computer</div>
+          <svg viewBox="0 0 32 32">
+            <rect x="4" y="6" width="24" height="16" fill="#c0c0c0" stroke="#404040"/>
+            <rect x="6" y="8" width="20" height="10" fill="#fff" stroke="#808080"/>
+            <rect x="10" y="24" width="12" height="4" fill="#808080" stroke="#404040"/>
+          </svg>
+          <span>My Computer</span>
         </div>
-
         <div class="icon">
-          <img class="ico ico-network" alt="" />
-          <div class="label">Network<br/>Neighborhood</div>
+          <svg viewBox="0 0 32 32">
+            <circle cx="10" cy="12" r="6" fill="#00a0ff" stroke="#404040"/>
+            <circle cx="22" cy="12" r="6" fill="#00a0ff" stroke="#404040"/>
+            <rect x="10" y="10" width="12" height="4" fill="#c0c0c0" stroke="#404040"/>
+            <rect x="6" y="22" width="20" height="6" fill="#fff" stroke="#404040"/>
+          </svg>
+          <span>Network</span>
         </div>
-
         <div class="icon">
-          <img class="ico ico-bin" alt="" />
-          <div class="label">Recycle Bin</div>
+          <svg viewBox="0 0 32 32">
+            <rect x="8" y="8" width="16" height="20" rx="1" fill="#fff" stroke="#404040"/>
+            <rect x="8" y="6" width="16" height="4" fill="#c0c0c0" stroke="#404040"/>
+            <line x1="11" y1="14" x2="21" y2="14" stroke="#808080"/>
+            <line x1="11" y1="18" x2="21" y2="18" stroke="#808080"/>
+            <line x1="11" y1="22" x2="18" y2="22" stroke="#808080"/>
+          </svg>
+          <span>Recycle Bin</span>
         </div>
-
         <div class="icon">
-          <img class="ico ico-exe" alt="" />
-          <div class="label">VALING.EXE</div>
+          <svg viewBox="0 0 32 32">
+            <rect x="6" y="4" width="20" height="24" fill="#fff" stroke="#404040"/>
+            <rect x="6" y="4" width="20" height="6" fill="#000080"/>
+            <text x="8" y="9" font-size="5" fill="#fff" font-weight="bold">VALING</text>
+            <rect x="9" y="14" width="14" height="10" fill="#eaeaea" stroke="#808080"/>
+            <text x="8" y="27" font-size="5" fill="#000">.EXE</text>
+          </svg>
+          <span>VALING.EXE</span>
+        </div>
+        <div class="icon">
+          <svg viewBox="0 0 32 32">
+            <path d="M6 6 H22 L26 10 V28 H6 Z" fill="#fff2a8" stroke="#404040"/>
+            <path d="M22 6 V10 H26" fill="#ffe27a" stroke="#404040"/>
+            <line x1="10" y1="14" x2="22" y2="14" stroke="#808080"/>
+            <line x1="10" y1="18" x2="22" y2="18" stroke="#808080"/>
+            <line x1="10" y1="22" x2="18" y2="22" stroke="#808080"/>
+          </svg>
+          <span>My Documents</span>
+        </div>
+        <div class="icon">
+          <svg viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="10" fill="#00a0ff" stroke="#404040"/>
+            <line x1="8" y1="16" x2="24" y2="16" stroke="#fff" stroke-width="2"/>
+            <path d="M10 10 Q16 6, 22 12" fill="none" stroke="#ffd000" stroke-width="3"/>
+          </svg>
+          <span>Internet Explorer</span>
         </div>
       </div>
 
-      <!-- RIGHT icons -->
-      <div class="icons-right" aria-hidden="true">
-        <div class="icon">
-          <img class="ico ico-docs" alt="" />
-          <div class="label">My Documents</div>
-        </div>
-        <div class="icon">
-          <img class="ico ico-ie" alt="" />
-          <div class="label">Internet<br/>Explorer</div>
-        </div>
-        <div class="icon">
-          <img class="ico ico-aol" alt="" />
-          <div class="label">AOL</div>
-        </div>
-      </div>
-
-      <!-- VALING.EXE window (open) -->
-      <article class="window" role="img" aria-label="VALING.EXE aken on avatud ja kuvab sammud">
+      <div class="window">
         <div class="titlebar">
-          <div class="title-left">
-            <img class="mini ico-mini" alt="" />
-            <span>VALING.EXE</span>
+          <div class="titlebar-left">
+            <svg class="titlebar-icon" viewBox="0 0 16 16">
+              <rect x="2" y="1" width="12" height="14" fill="#fff" stroke="#404040" stroke-width="0.5"/>
+              <rect x="2" y="1" width="12" height="4" fill="#000080"/>
+              <text x="3" y="4" font-size="3" fill="#fff">V</text>
+            </svg>
+            <span class="titlebar-text">VALING.EXE - Ostin Valing Properties</span>
           </div>
-          <div class="controls" aria-hidden="true">
-            <div class="ctrl">_</div>
-            <div class="ctrl">□</div>
-            <div class="ctrl">✕</div>
+          <div class="titlebar-buttons">
+            <div class="btn">_</div>
+            <div class="btn">□</div>
+            <div class="btn">×</div>
           </div>
         </div>
+        
+        <div class="menubar">
+          <span>File</span>
+          <span>Edit</span>
+          <span>View</span>
+          <span>Help</span>
+        </div>
 
-        <div class="body">
-          <div class="topgrid">
-            <div class="badge">
-              <img class="big ico-exe" alt="" />
-              <div class="ver">Valing v98.0</div>
-            </div>
-
-            <div class="panel meta">
-              <div><b>Toode:</b> Valing Family Suite</div>
-              <div><b>Tüüp:</b> Legacy desktop utiliit</div>
-              <div><b>Autor:</b> Ostin Valing</div>
-              <div><b>Litsents:</b> “Sõbrale kinkimiseks”</div>
-              <div class="divider"></div>
-              <div>
-                Tere tulemast <b>valing.ee</b> “desktopile”.
-                See on retro-landing, mis näeb välja nagu Windows 98.
+        <div class="window-content">
+          <div class="profile-header">
+            <div class="profile-pic">👤</div>
+            <div class="profile-info">
+              <div class="profile-name">OSTIN VALING</div>
+              <div class="profile-title">Human Being • Professional Legend • valing.ee Administrator</div>
+              <div class="profile-status">
+                <span class="status-dot"></span>
+                Online since 1990-something
+              </div>
+              <div class="badges">
+                <span class="badge badge-gold">★ Legend</span>
+                <span class="badge badge-silver">♦ Gamer</span>
+                <span class="badge badge-bronze">● Coffee Powered</span>
               </div>
             </div>
           </div>
 
-          <div class="panel">
-            <div style="font-weight:bold; margin-bottom:6px;">Nõutavad järgmised sammud:</div>
-            <ol class="steps">
-              <li>Hinga sisse 90ndate internetti.</li>
-              <li>Ütle valjusti: “Valing on legend.”</li>
-              <li>Ava külmkapp ja võta üks suvaline nostalgia.</li>
-              <li>Saada Ostinile link: <b>valing.ee</b></li>
-              <li>Naera, sest see sait on <b>khuul</b>.</li>
-            </ol>
-            <div class="hint">
-              (Soovi korral muuda seda teksti otse HTML-is – lisa päris perekonnalugu, inside-joke’e või “changelog’i”.)
+          <div class="tabs">
+            <div class="tab active">General</div>
+            <div class="tab">Stats</div>
+            <div class="tab">About</div>
+          </div>
+
+          <div class="tab-content">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-label">Species:</span>
+                <span class="stat-value">Homo Sapiens</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Class:</span>
+                <span class="stat-value">Legendary</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Domain:</span>
+                <span class="stat-value">valing.ee</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Status:</span>
+                <span class="stat-value" style="color: green;">✓ Certified Cool</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Power Level:</span>
+                <span class="stat-value">Over 9000</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Vibes:</span>
+                <span class="stat-value">Immaculate</span>
+              </div>
+            </div>
+
+            <div class="quote-box">
+              "If you're reading this, you've found the coolest corner of the internet. Welcome to valing.ee — where legends are made and dial-up sounds echo in eternity."
+            </div>
+
+            <div style="margin-top: 12px;">
+              <div style="font-size: 10px; margin-bottom: 4px;">Loading awesomeness...</div>
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+                <div class="progress-text">∞%</div>
+              </div>
             </div>
           </div>
         </div>
-      </article>
+      </div>
 
-      <!-- Taskbar -->
-      <footer class="taskbar" aria-hidden="true">
-        <div class="start">
-          <img class="mini ico-start" alt="" />
-          Start
+      <div class="taskbar">
+        <div class="start-btn">
+          <svg viewBox="0 0 16 16">
+            <rect width="16" height="16" fill="#c0c0c0"/>
+            <rect x="1" y="1" width="6" height="6" fill="#ff0000"/>
+            <rect x="9" y="1" width="6" height="6" fill="#00ff00"/>
+            <rect x="1" y="9" width="6" height="6" fill="#0000ff"/>
+            <rect x="9" y="9" width="6" height="6" fill="#ffff00"/>
+          </svg>
+          <span>Start</span>
         </div>
-        <div class="clock">98:00</div>
-      </footer>
+        <div class="taskbar-divider"></div>
+        <div class="taskbar-item">
+          <svg viewBox="0 0 16 16">
+            <rect x="2" y="1" width="12" height="14" fill="#fff" stroke="#404040" stroke-width="0.5"/>
+            <rect x="2" y="1" width="12" height="4" fill="#000080"/>
+          </svg>
+          <span>VALING.EXE</span>
+        </div>
+        <div class="tray">
+          <div class="tray-icons">
+            <svg viewBox="0 0 16 16">
+              <rect x="3" y="8" width="2" height="6" fill="#000"/>
+              <rect x="7" y="5" width="2" height="9" fill="#000"/>
+              <rect x="11" y="2" width="2" height="12" fill="#000"/>
+            </svg>
+            <svg viewBox="0 0 16 16">
+              <circle cx="8" cy="8" r="6" fill="none" stroke="#000" stroke-width="1.5"/>
+              <line x1="8" y1="4" x2="8" y2="8" stroke="#000" stroke-width="1.5"/>
+              <line x1="8" y1="8" x2="11" y2="10" stroke="#000" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <span id="clock">12:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    </section>
-  </main>
-
-  <div class="note">valing.ee — Windows 98 stiilis “screenshot” (responsive, staatiline)</div>
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('clock').textContent = hours + ':' + minutes;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
 </body>
 </html>
